@@ -4,6 +4,6 @@
   "project_id": "fl8693813c3b4f728a963490",
   "github_repo_path": "./github_repo",
   "auth": {
-    "api_key": "${{ vars.api_key }}"
+    "api_key": "YOUR_API_KEY_HERE"
   }
 }

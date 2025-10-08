@@ -39,9 +39,9 @@ jobs:
         run: |
           cat > config.json << EOF
           {
-            "base_url": "${{ vars.WEBMETHODS_BASE_URL }}",
-            "project_name": "${{ vars.WEBMETHODS_PROJECT_NAME }}",
-            "project_id": "${{ vars.WEBMETHODS_PROJECT_ID }}",
+            "base_url": "${{ secrets.WEBMETHODS_BASE_URL }}",
+            "project_name": "${{ secrets.WEBMETHODS_PROJECT_NAME }}",
+            "project_id": "${{ secrets.WEBMETHODS_PROJECT_ID }}",
             "github_repo_path": "./assets",
             "auth": {
               "api_key": "${{ secrets.WEBMETHODS_API_KEY }}"
@@ -57,7 +57,12 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add assets/
+          git add config.json || echo "No config.json changes"
+          git add webmethods_asset_puller.log || echo "No log file to add"
           git commit -m "Update webMethods.io assets [skip ci]" || echo "No changes to commit"
+          
+          # Use PAT for authentication
+          git remote set-url origin https://${{ secrets.GH_PAT }}@github.com/${{ github.repository }}.git
           git push
 
 # Made with Bob

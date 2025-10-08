@@ -23,6 +23,19 @@ You need to add the following secrets to your GitHub repository:
    - `WEBMETHODS_PROJECT_NAME`: Your project name
    - `WEBMETHODS_PROJECT_ID`: Your project ID
    - `WEBMETHODS_API_KEY`: Your API key for authentication
+   - `GH_PAT`: A GitHub Personal Access Token with repo scope (required for pushing changes)
+
+### 2. Create a Personal Access Token (PAT)
+
+To allow GitHub Actions to push changes to your repository, you need to create a Personal Access Token:
+
+1. Go to your GitHub account settings
+2. Click on "Developer settings" > "Personal access tokens" > "Tokens (classic)"
+3. Click on "Generate new token" > "Generate new token (classic)"
+4. Give it a descriptive name like "WebMethods Asset Puller"
+5. Select the "repo" scope to allow pushing to repositories
+6. Click "Generate token"
+7. Copy the token and add it as a secret named `GH_PAT` in your repository
 
 ### 2. GitHub Actions Workflow
 

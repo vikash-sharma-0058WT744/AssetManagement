@@ -26,8 +26,8 @@ jobs:
       - name: Export webMethods.io assets
         run: |
           python webmethods_asset_exporter.py \
-            --tenant ${{ secrets.WEBMETHODS_TENANT }} \
-            --project "${{ secrets.WEBMETHODS_PROJECT }}" \
+            --tenant ${{ vars.WEBMETHODS_TENANT }} \
+            --project "${{ vars.WEBMETHODS_PROJECT }}" \
             --api-key ${{ secrets.WEBMETHODS_API_KEY }} \
             --output-dir ./ \
             --debug

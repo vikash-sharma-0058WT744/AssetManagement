@@ -175,9 +175,9 @@ def main():
         time.sleep(1)
     
     # Save other asset information
-    save_flow_info(assets.get("flows", []))
-    save_listener_info(assets.get("listener", []))
-    save_messaging_info(assets.get("messaging", []))
+    #save_flow_info(assets.get("flows", []))
+    #save_listener_info(assets.get("listener", []))
+    #save_messaging_info(assets.get("messaging", []))
     
     logger.info("Asset pulling completed successfully")
 

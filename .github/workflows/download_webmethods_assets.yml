@@ -40,14 +40,14 @@ jobs:
                 "type": "flow",
                 "description": "Example flow service",
                 "version": "1.0",
-                "downloadLink": "${{ secrets.WEBMETHODS_ASSET_URL1 }}"
+                "downloadLink": "abc"
               },
               {
                 "name": "FlowService2",
                 "type": "flow",
                 "description": "Another flow service",
                 "version": "1.1",
-                "downloadLink": "${{ secrets.WEBMETHODS_ASSET_URL2 }}"
+                "downloadLink": "xyz"
               }
             ]
           }
@@ -56,7 +56,7 @@ jobs:
       - name: Download webMethods.io assets
         env:
           GH_PAT: ${{ secrets.GH_PAT }}
-          TARGET_REPO: "vikash-sharma-0058WT744/TenantCICDRepo"
+          TARGET_REPO: "vikash-sharma-0058WT744/AssetManagement"
         run: |
           python download_webmethods_assets.py \
             --json-file assets.json \

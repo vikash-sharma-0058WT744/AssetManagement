@@ -39,9 +39,9 @@ jobs:
         run: |
           cat > config.json << EOF
           {
-            "base_url": "${{ secrets.WEBMETHODS_BASE_URL }}",
-            "project_name": "${{ secrets.WEBMETHODS_PROJECT_NAME }}",
-            "project_id": "${{ secrets.WEBMETHODS_PROJECT_ID }}",
+            "base_url": "${{ vars.WEBMETHODS_BASE_URL }}",
+            "project_name": "${{ vars.WEBMETHODS_PROJECT_NAME }}",
+            "project_id": "${{ vars.WEBMETHODS_PROJECT_ID }}",
             "github_repo_path": "./assets",
             "auth": {
               "api_key": "${{ secrets.WEBMETHODS_API_KEY }}"

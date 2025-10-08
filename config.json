@@ -1,0 +1,9 @@
+{
+  "base_url": "https://test724810.a-vir-r1.int.ipaas.automation.ibm.com",
+  "project_name": "LogisticArtefacts",
+  "project_id": "fl8693813c3b4f728a963490",
+  "github_repo_path": "./github_repo",
+  "auth": {
+    "api_key": "${{ vars.api_key }}"
+  }
+}

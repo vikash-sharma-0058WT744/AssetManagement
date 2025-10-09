@@ -92,7 +92,7 @@ def get_assets():
     
     try:
         logger.info(f"Fetching assets from {url}")
-        response = requests.post(url, headers=headers)
+        response = requests.get(url, headers=headers)
         response.raise_for_status()
         
         assets = response.json()
@@ -117,7 +117,7 @@ def download_workflow(workflow_id):
     
     try:
         logger.info(f"Getting download link for workflow {workflow_id}")
-        response = requests.get(url, headers=headers)
+        response = requests.post(url, headers=headers)
         response.raise_for_status()
         
         download_info = response.json()["output"]

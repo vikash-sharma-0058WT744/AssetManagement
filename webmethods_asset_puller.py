@@ -92,7 +92,7 @@ def get_assets():
     
     try:
         logger.info(f"Fetching assets from {url}")
-        response = requests.get(url, headers=headers)
+        response = requests.post(url, headers=headers)
         response.raise_for_status()
         
         assets = response.json()

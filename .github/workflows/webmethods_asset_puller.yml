@@ -40,9 +40,9 @@ jobs:
       
       - name: Run asset puller
         env:
-          WEBMETHODS_BASE_URL: ${{ secrets.WEBMETHODS_BASE_URL }}
-          WEBMETHODS_PROJECT_NAME: ${{ secrets.WEBMETHODS_PROJECT_NAME }}
-          WEBMETHODS_PROJECT_ID: ${{ secrets.WEBMETHODS_PROJECT_ID }}
+          WEBMETHODS_BASE_URL: ${{ vars.WEBMETHODS_BASE_URL }}
+          WEBMETHODS_PROJECT_NAME: ${{ vars..WEBMETHODS_PROJECT_NAME }}
+          WEBMETHODS_PROJECT_ID: ${{ vars..WEBMETHODS_PROJECT_ID }}
           WEBMETHODS_API_KEY: ${{ secrets.WEBMETHODS_API_KEY }}
           GITHUB_REPO_PATH: "./assets"
         run: |
@@ -64,9 +64,10 @@ jobs:
           git commit -m "Update webMethods.io assets [skip ci]" || echo "No changes to commit"
       
       - name: Push changes
-        uses: stefanzweifel/git-auto-commit-action@v4
+        uses: EndBug/add-and-commit@v9
         with:
-          commit_message: "Update webMethods.io assets [skip ci]"
-          file_pattern: "assets/ config.json webmethods_asset_puller.log"
+          add: 'assets/ webmethods_asset_puller.log config.json'
+          message: 'Update webMethods.io assets [skip ci]'
+          default_author: github_actions
 
 # Made with Bob

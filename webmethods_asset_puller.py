@@ -72,7 +72,8 @@ def get_auth_headers():
     headers = {}
     
     if API_KEY:
-        headers['x-api-key'] = API_KEY
+        # Use the correct header name required by the API
+        headers['X-INSTANCE-API-KEY'] = API_KEY
     
     return headers
 

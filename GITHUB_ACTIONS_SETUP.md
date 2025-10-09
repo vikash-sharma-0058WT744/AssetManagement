@@ -23,19 +23,18 @@ You need to add the following secrets to your GitHub repository:
    - `WEBMETHODS_PROJECT_NAME`: Your project name
    - `WEBMETHODS_PROJECT_ID`: Your project ID
    - `WEBMETHODS_API_KEY`: Your API key for authentication
-   - `GH_PAT`: A GitHub Personal Access Token with repo scope (required for pushing changes)
 
-### 2. Create a Personal Access Token (PAT)
+### 2. Enable GitHub Actions Workflow Permissions
 
-To allow GitHub Actions to push changes to your repository, you need to create a Personal Access Token:
+To allow GitHub Actions to push changes to your repository:
 
-1. Go to your GitHub account settings
-2. Click on "Developer settings" > "Personal access tokens" > "Tokens (classic)"
-3. Click on "Generate new token" > "Generate new token (classic)"
-4. Give it a descriptive name like "WebMethods Asset Puller"
-5. Select the "repo" scope to allow pushing to repositories
-6. Click "Generate token"
-7. Copy the token and add it as a secret named `GH_PAT` in your repository
+1. Go to your GitHub repository
+2. Click on "Settings" > "Actions" > "General"
+3. Scroll down to "Workflow permissions"
+4. Select "Read and write permissions"
+5. Click "Save"
+
+This allows the default `GITHUB_TOKEN` to push changes to your repository without needing a personal access token.
 
 ### 2. GitHub Actions Workflow
 
@@ -84,6 +83,34 @@ After the workflow runs:
 3. Click on the latest "WebMethods.io Asset Puller" workflow run
 4. View the logs to see what assets were pulled
 5. Check the commit history to see the changes made to your repository
+
+### 6. Accessing the Pulled Assets
+
+The assets pulled from webMethods.io Integration will be stored in your GitHub repository:
+
+1. Go to your GitHub repository's main page
+2. Navigate to the `assets` directory
+3. This directory contains:
+   - `workflows/`: ZIP files of each workflow
+   - `flows/flow_list.json`: Information about flows
+   - `listeners/listener_list.json`: Information about listeners
+   - `messaging/messaging_list.json`: Information about messaging
+
+You can:
+- Browse these files directly on GitHub
+- Clone the repository to view them locally
+- Download individual files as needed
+
+### 7. Troubleshooting
+
+If you don't see the assets in your repository after the workflow runs:
+
+1. Check the workflow run logs for any errors
+2. Verify that the workflow completed successfully
+3. Check if the commit was made by looking at the repository's commit history
+4. Make sure you have the necessary permissions to view the repository
+5. Try refreshing your browser or clearing your cache
+6. If using the GitHub mobile app, try viewing the repository in a web browser instead
 
 ## Troubleshooting
 

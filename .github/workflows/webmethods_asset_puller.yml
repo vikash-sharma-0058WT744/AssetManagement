@@ -35,6 +35,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install requests
       
+      - name: Create assets directory
+        run: mkdir -p assets/workflows assets/flows assets/listeners assets/messaging
+      
       - name: Run asset puller
         env:
           WEBMETHODS_BASE_URL: ${{ secrets.WEBMETHODS_BASE_URL }}
@@ -42,15 +45,22 @@ jobs:
           WEBMETHODS_PROJECT_ID: ${{ secrets.WEBMETHODS_PROJECT_ID }}
           WEBMETHODS_API_KEY: ${{ secrets.WEBMETHODS_API_KEY }}
           GITHUB_REPO_PATH: "./assets"
-        run: python webmethods_asset_puller.py
+        run: |
+          python webmethods_asset_puller.py
+          # Create placeholder files if directories are empty
+          touch assets/workflows/.gitkeep
+          touch assets/flows/.gitkeep
+          touch assets/listeners/.gitkeep
+          touch assets/messaging/.gitkeep
       
       - name: Commit changes
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add assets/
+          git add -f assets/
           git add config.json || echo "No config.json changes"
           git add webmethods_asset_puller.log || echo "No log file to add"
+          git status
           git commit -m "Update webMethods.io assets [skip ci]" || echo "No changes to commit"
       
       - name: Push changes

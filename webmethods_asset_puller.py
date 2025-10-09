@@ -23,15 +23,33 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-# Load configuration
+# Load configuration from environment variables or config file
 try:
-    with open('config.json', 'r') as config_file:
-        config = json.load(config_file)
-        BASE_URL = config.get('base_url')
-        PROJECT_NAME = config.get('project_name')
-        PROJECT_ID = config.get('project_id')
-        GITHUB_REPO_PATH = config.get('github_repo_path')
-        AUTH = config.get('auth', {})
+    # First try to get configuration from environment variables
+    BASE_URL = os.environ.get('WEBMETHODS_BASE_URL')
+    PROJECT_NAME = os.environ.get('WEBMETHODS_PROJECT_NAME')
+    PROJECT_ID = os.environ.get('WEBMETHODS_PROJECT_ID')
+    GITHUB_REPO_PATH = os.environ.get('GITHUB_REPO_PATH', './github_repo')
+    API_KEY = os.environ.get('WEBMETHODS_API_KEY')
+    
+    # If environment variables are not set, try to load from config file
+    if not all([BASE_URL, PROJECT_NAME, PROJECT_ID]):
+        logger.info("Environment variables not found, trying to load from config.json")
+        with open('config.json', 'r') as config_file:
+            config = json.load(config_file)
+            BASE_URL = BASE_URL or config.get('base_url')
+            PROJECT_NAME = PROJECT_NAME or config.get('project_name')
+            PROJECT_ID = PROJECT_ID or config.get('project_id')
+            GITHUB_REPO_PATH = GITHUB_REPO_PATH or config.get('github_repo_path')
+            API_KEY = API_KEY or config.get('auth', {}).get('api_key')
+    
+    # Log the configuration (without sensitive data)
+    logger.info(f"Using BASE_URL: {BASE_URL}")
+    logger.info(f"Using PROJECT_NAME: {PROJECT_NAME}")
+    logger.info(f"Using PROJECT_ID: {PROJECT_ID}")
+    logger.info(f"Using GITHUB_REPO_PATH: {GITHUB_REPO_PATH}")
+    logger.info(f"API_KEY is {'set' if API_KEY else 'not set'}")
+    
 except Exception as e:
     logger.error(f"Error loading configuration: {e}")
     logger.error("Using default configuration")
@@ -39,7 +57,7 @@ except Exception as e:
     PROJECT_NAME = "YOUR_PROJECT_NAME"
     PROJECT_ID = "YOUR_PROJECT_ID"
     GITHUB_REPO_PATH = "./github_repo"
-    AUTH = {}
+    API_KEY = None
 
 # Create directories if they don't exist
 os.makedirs(f"{GITHUB_REPO_PATH}/workflows", exist_ok=True)
@@ -53,8 +71,8 @@ def get_auth_headers():
     """
     headers = {}
     
-    if AUTH.get('api_key'):
-        headers['x-api-key'] = AUTH.get('api_key')
+    if API_KEY:
+        headers['x-api-key'] = API_KEY
     
     return headers
 
@@ -62,7 +80,13 @@ def get_assets():
     """
     Get the list of assets from webMethods.io Integration
     """
-    url = f"{BASE_URL}/apis/v1/rest/projects/{PROJECT_NAME}/assets"
+    if not BASE_URL or not PROJECT_NAME:
+        logger.error("BASE_URL or PROJECT_NAME is not set")
+        return None
+        
+    # Ensure BASE_URL doesn't end with a slash
+    base_url = BASE_URL.rstrip('/') if BASE_URL else ""
+    url = f"{base_url}/apis/v1/rest/projects/{PROJECT_NAME}/assets"
     headers = get_auth_headers()
     
     try:
@@ -81,7 +105,13 @@ def download_workflow(workflow_id):
     """
     Download a workflow using its ID
     """
-    url = f"{BASE_URL}/apis/v1/rest/projects/{PROJECT_ID}/workflows/{workflow_id}/export"
+    if not BASE_URL or not PROJECT_ID:
+        logger.error("BASE_URL or PROJECT_ID is not set")
+        return None
+        
+    # Ensure BASE_URL doesn't end with a slash
+    base_url = BASE_URL.rstrip('/') if BASE_URL else ""
+    url = f"{base_url}/apis/v1/rest/projects/{PROJECT_ID}/workflows/{workflow_id}/export"
     headers = get_auth_headers()
     
     try:
@@ -99,7 +129,7 @@ def download_workflow(workflow_id):
         # Extract filename from URL
         parsed_url = urlparse(download_link)
         path_parts = parsed_url.path.split('/')
-        filename = path_parts[-2]  # Get the filename part
+        filename = path_parts[-2] if len(path_parts) >= 2 else workflow_id  # Get the filename part
         
         # Save the file
         filepath = f"{GITHUB_REPO_PATH}/workflows/{workflow_id}.zip"
@@ -175,9 +205,9 @@ def main():
         time.sleep(1)
     
     # Save other asset information
-    #save_flow_info(assets.get("flows", []))
-    #save_listener_info(assets.get("listener", []))
-    #save_messaging_info(assets.get("messaging", []))
+    save_flow_info(assets.get("flows", []))
+    save_listener_info(assets.get("listener", []))
+    save_messaging_info(assets.get("messaging", []))
     
     logger.info("Asset pulling completed successfully")
 

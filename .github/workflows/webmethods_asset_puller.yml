@@ -35,21 +35,13 @@ jobs:
           python -m pip install --upgrade pip
           pip install requests
       
-      - name: Create config file
-        run: |
-          cat > config.json << EOF
-          {
-            "base_url": "${{ secrets.WEBMETHODS_BASE_URL }}",
-            "project_name": "${{ secrets.WEBMETHODS_PROJECT_NAME }}",
-            "project_id": "${{ secrets.WEBMETHODS_PROJECT_ID }}",
-            "github_repo_path": "./assets",
-            "auth": {
-              "api_key": "${{ secrets.WEBMETHODS_API_KEY }}"
-            }
-          }
-          EOF
-      
       - name: Run asset puller
+        env:
+          WEBMETHODS_BASE_URL: ${{ vars.WEBMETHODS_BASE_URL }}
+          WEBMETHODS_PROJECT_NAME: ${{ vars.WEBMETHODS_PROJECT_NAME }}
+          WEBMETHODS_PROJECT_ID: ${{ vars.WEBMETHODS_PROJECT_ID }}
+          WEBMETHODS_API_KEY: ${{ secrets.WEBMETHODS_API_KEY }}
+          GITHUB_REPO_PATH: "./assets"
         run: python webmethods_asset_puller.py
       
       - name: Commit and push changes

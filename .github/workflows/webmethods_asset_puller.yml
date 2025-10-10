@@ -55,6 +55,10 @@ jobs:
           ls -l assets
           ls -l assets/workflows
 
+
+      - name: List contents before commit and push
+        run: ls -R assets
+
       - name: Run asset puller
         env:
           WEBMETHODS_BASE_URL: ${{ vars.WEBMETHODS_BASE_URL }}
@@ -87,4 +91,7 @@ jobs:
           message: 'Update webMethods.io assets [skip ci]'
           default_author: github_actions
 
+
+      - name: List contents After commit and push
+        run: ls -R assets
 # Made with Bob

@@ -86,7 +86,7 @@ jobs:
 
       - name: Run asset puller
         run: |
-          python modified_webmethods_asset_puller.py
+          python webmethods_asset_puller.py
           # Create placeholder files if directories are empty
           touch ${{ github.workspace }}/downloaded_assets/workflows/.gitkeep
           touch ${{ github.workspace }}/downloaded_assets/flows/.gitkeep

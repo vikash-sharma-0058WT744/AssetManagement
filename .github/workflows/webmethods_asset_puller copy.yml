@@ -55,25 +55,17 @@ jobs:
           ls -l assets
           ls -l assets/workflows
 
-      # Create a config file with the correct path
-      - name: Create config file
-        run: |
-          cat > config.json << 'EOL'
-          {
-            "base_url": "${{ vars.WEBMETHODS_BASE_URL }}",
-            "project_name": "${{ vars.WEBMETHODS_PROJECT_NAME }}",
-            "project_id": "${{ vars.WEBMETHODS_PROJECT_ID }}",
-            "github_repo_path": "./assets",
-            "auth": {
-              "api_key": "${{ secrets.WEBMETHODS_API_KEY }}"
-            }
-          }
-          EOL
 
       - name: List contents before commit and push
         run: ls -R assets
 
       - name: Run asset puller
+        env:
+          WEBMETHODS_BASE_URL: ${{ vars.WEBMETHODS_BASE_URL }}
+          WEBMETHODS_PROJECT_NAME: ${{ vars.WEBMETHODS_PROJECT_NAME }}
+          WEBMETHODS_PROJECT_ID: ${{ vars.WEBMETHODS_PROJECT_ID }}
+          WEBMETHODS_API_KEY: ${{ secrets.WEBMETHODS_API_KEY }}
+          GITHUB_REPO_PATH: "./assets"
         run: |
           python webmethods_asset_puller.py
           # Create placeholder files if directories are empty
@@ -99,7 +91,7 @@ jobs:
           message: 'Update webMethods.io assets [skip ci]'
           default_author: github_actions
 
+
       - name: List contents After commit and push
         run: ls -R assets
-
 # Made with Bob

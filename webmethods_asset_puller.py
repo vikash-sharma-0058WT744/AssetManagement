@@ -59,11 +59,22 @@ except Exception as e:
     GITHUB_REPO_PATH = "./github_repo"
     API_KEY = None
 
-# Create directories if they don't exist
-os.makedirs(f"{GITHUB_REPO_PATH}/workflows", exist_ok=True)
-os.makedirs(f"{GITHUB_REPO_PATH}/flows", exist_ok=True)
-os.makedirs(f"{GITHUB_REPO_PATH}/listeners", exist_ok=True)
-os.makedirs(f"{GITHUB_REPO_PATH}/messaging", exist_ok=True)
+# Create main assets directory
+ASSETS_DIR = os.path.join(GITHUB_REPO_PATH, "downloaded_assets")
+os.makedirs(ASSETS_DIR, exist_ok=True)
+
+# Create workflows directory inside downloaded_assets
+WORKFLOWS_DIR = os.path.join(ASSETS_DIR, "workflows")
+os.makedirs(WORKFLOWS_DIR, exist_ok=True)
+
+# Create other asset directories
+FLOWS_DIR = os.path.join(ASSETS_DIR, "flows")
+LISTENERS_DIR = os.path.join(ASSETS_DIR, "listeners")
+MESSAGING_DIR = os.path.join(ASSETS_DIR, "messaging")
+
+os.makedirs(FLOWS_DIR, exist_ok=True)
+os.makedirs(LISTENERS_DIR, exist_ok=True)
+os.makedirs(MESSAGING_DIR, exist_ok=True)
 
 def get_auth_headers():
     """
@@ -132,8 +143,8 @@ def download_workflow(workflow_id):
         path_parts = parsed_url.path.split('/')
         filename = path_parts[-2] if len(path_parts) >= 2 else workflow_id  # Get the filename part
         
-        # Save the file
-        filepath = f"{GITHUB_REPO_PATH}/workflows/{workflow_id}.zip"
+        # Save the file to the workflows directory inside downloaded_assets
+        filepath = f"{WORKFLOWS_DIR}/{workflow_id}.zip"
         with open(filepath, 'wb') as f:
             f.write(download_response.content)
         
@@ -151,7 +162,7 @@ def save_flow_info(flows):
         logger.info("No flows to save")
         return
     
-    filepath = f"{GITHUB_REPO_PATH}/flows/flow_list.json"
+    filepath = f"{FLOWS_DIR}/flow_list.json"
     with open(filepath, 'w') as f:
         json.dump(flows, f, indent=2)
     
@@ -165,7 +176,7 @@ def save_listener_info(listeners):
         logger.info("No listeners to save")
         return
     
-    filepath = f"{GITHUB_REPO_PATH}/listeners/listener_list.json"
+    filepath = f"{LISTENERS_DIR}/listener_list.json"
     with open(filepath, 'w') as f:
         json.dump(listeners, f, indent=2)
     
@@ -179,7 +190,7 @@ def save_messaging_info(messaging):
         logger.info("No messaging to save")
         return
     
-    filepath = f"{GITHUB_REPO_PATH}/messaging/messaging_list.json"
+    filepath = f"{MESSAGING_DIR}/messaging_list.json"
     with open(filepath, 'w') as f:
         json.dump(messaging, f, indent=2)
     

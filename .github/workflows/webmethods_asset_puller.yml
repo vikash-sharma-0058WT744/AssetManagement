@@ -20,10 +20,6 @@ on:
 jobs:
   pull-assets:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        # This explicitly sets the working directory to the repository root
-        working-directory: ${{ github.workspace }}
     
     steps:
       - name: Checkout repository
@@ -39,12 +35,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install requests
       
-      - name: Print GitHub workspace
-        run: echo "GitHub workspace is ${{ github.workspace }}"
-      
-      - name: Print current directory
-        run: pwd
-      
       - name: Create assets directory
         run: mkdir -p assets/workflows assets/flows assets/listeners assets/messaging
       
@@ -56,32 +46,26 @@ jobs:
             echo "Directory creation failed."
             exit 1
           fi
+          
+      - name: Print working directory
+        run: pwd
       
       - name: Verify directories
         run: |
           ls -l assets
           ls -l assets/workflows
 
-      # Create a config file with the correct path
-      - name: Create config file
-        run: |
-          cat > config.json << 'EOL'
-          {
-            "base_url": "${{ vars.WEBMETHODS_BASE_URL }}",
-            "project_name": "${{ vars.WEBMETHODS_PROJECT_NAME }}",
-            "project_id": "${{ vars.WEBMETHODS_PROJECT_ID }}",
-            "github_repo_path": "${{ github.workspace }}/assets",
-            "auth": {
-              "api_key": "${{ secrets.WEBMETHODS_API_KEY }}"
-            }
-          }
-          EOL
-          echo "Created config file with path: ${{ github.workspace }}/assets"
 
       - name: List contents before commit and push
         run: ls -R assets
 
       - name: Run asset puller
+        env:
+          WEBMETHODS_BASE_URL: ${{ vars.WEBMETHODS_BASE_URL }}
+          WEBMETHODS_PROJECT_NAME: ${{ vars.WEBMETHODS_PROJECT_NAME }}
+          WEBMETHODS_PROJECT_ID: ${{ vars.WEBMETHODS_PROJECT_ID }}
+          WEBMETHODS_API_KEY: ${{ secrets.WEBMETHODS_API_KEY }}
+          GITHUB_REPO_PATH: "./assets"
         run: |
           python webmethods_asset_puller.py
           # Create placeholder files if directories are empty
@@ -95,10 +79,10 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add -f assets/
-          git add config.json || true
-          git add webmethods_asset_puller.log || true
+          git add config.json || echo "No config.json changes"
+          git add webmethods_asset_puller.log || echo "No log file to add"
           git status
-          git commit -m "Update webMethods.io assets [skip ci]" || true
+          git commit -m "Update webMethods.io assets [skip ci]" || echo "No changes to commit"
       
       - name: Push changes
         uses: EndBug/add-and-commit@v9
@@ -107,7 +91,7 @@ jobs:
           message: 'Update webMethods.io assets [skip ci]'
           default_author: github_actions
 
+
       - name: List contents After commit and push
         run: ls -R assets
-
 # Made with Bob

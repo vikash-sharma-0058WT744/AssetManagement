@@ -38,6 +38,14 @@ jobs:
       - name: Create assets directory
         run: mkdir -p assets/workflows assets/flows assets/listeners assets/messaging
       
+      - name: Verify directory exists
+        run: |
+          if [ -d "assets/workflows" ]; then
+            echo "Directory created successfully."
+          else
+            echo "Directory creation failed."
+            exit 1
+          fi
       - name: Run asset puller
         env:
           WEBMETHODS_BASE_URL: ${{ vars.WEBMETHODS_BASE_URL }}

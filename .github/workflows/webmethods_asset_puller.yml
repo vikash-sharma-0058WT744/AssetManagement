@@ -46,6 +46,15 @@ jobs:
             echo "Directory creation failed."
             exit 1
           fi
+          
+      - name: Print working directory
+        run: pwd
+      
+      - name: Verify directories
+        run: |
+          ls -l assets
+          ls -l assets/workflows
+
       - name: Run asset puller
         env:
           WEBMETHODS_BASE_URL: ${{ vars.WEBMETHODS_BASE_URL }}
